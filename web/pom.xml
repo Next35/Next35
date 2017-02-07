@@ -18,6 +18,33 @@
     <build>
         <sourceDirectory>src/main</sourceDirectory>
         <testSourceDirectory>src/test</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>nl.next35</groupId>
+            <artifactId>logic</artifactId>
+            <version>0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.next35</groupId>
+            <artifactId>domain</artifactId>
+            <version>0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>1.5.1.RELEASE</version>
+        </dependency>
+    </dependencies>
 
 </project>
