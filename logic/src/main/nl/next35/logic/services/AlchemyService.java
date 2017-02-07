@@ -11,6 +11,10 @@ public class AlchemyService {
     private final AlchemyLanguage service;
 
     public AlchemyService() {
-        this.service = new AlchemyLanguage();
+        this.service = new AlchemyLanguage(ServiceConstants.ALCHEMY_KEY);
+    }
+
+    public AlchemyLanguage getService() {
+        return service;
     }
 }
