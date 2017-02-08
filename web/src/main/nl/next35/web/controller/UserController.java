@@ -66,7 +66,7 @@ public final class UserController {
         return json;
     }
 
-    @RequestMapping("/user/tone ")
+    @RequestMapping("/user/tone")
     public JSONObject tone(@RequestParam("name") String name) {
         ResolverChain chain = Main.getResolverChain();
         List<Post> posts = chain.resolve(new User(name));
