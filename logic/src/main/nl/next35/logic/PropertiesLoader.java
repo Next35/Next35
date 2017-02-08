@@ -10,7 +10,7 @@ public class PropertiesLoader {
     public static Properties properties() {
         Properties properties = new Properties();
         try {
-            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/services.properties"));
+            properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("services.properties"));
         } catch (IOException e) {
             System.out.println(e.toString());
         }

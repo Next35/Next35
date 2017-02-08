@@ -2,9 +2,11 @@ package nl.next35.logic.services;
 
 import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
 import com.ibm.watson.developer_cloud.alchemy.v1.model.*;
+import nl.next35.logic.PropertiesLoader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -16,7 +18,8 @@ public class AlchemyService {
     private Map<String, Object> input;
 
     public AlchemyService() {
-        this.service = new AlchemyLanguage(ServiceConstants.ALCHEMY_KEY);
+        Properties properties = PropertiesLoader.properties();
+        this.service = new AlchemyLanguage(properties.getProperty(ServiceConstants.ALCHEMY_KEY));
     }
 
     public void setInput(String text) {
@@ -28,8 +31,8 @@ public class AlchemyService {
         return service.getConcepts(input).execute();
     }
 
-    public DocumentEmotion getEmotion() {
-        return service.getEmotion(input).execute();
+    public DocumentEmotion.Emotion getEmotion() {
+        return service.getEmotion(input).execute().getEmotion();
     }
 
     public Entities getEntities() {
@@ -40,7 +43,7 @@ public class AlchemyService {
         return service.getKeywords(input).execute();
     }
 
-    public DocumentSentiment getSentiment() {
-        return service.getSentiment(input).execute();
+    public Sentiment getSentiment() {
+        return service.getSentiment(input).execute().getSentiment();
     }
 }
