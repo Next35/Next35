@@ -2,6 +2,7 @@ package nl.next35.web;
 
 import nl.next35.logic.RedditResolver;
 import nl.next35.logic.ResolverChain;
+import nl.next35.logic.TwitterResolver;
 import nl.next35.logic.services.AlchemyService;
 import nl.next35.logic.services.PersonalityService;
 import nl.next35.logic.services.ToneService;
@@ -22,7 +23,7 @@ public class Main {
 
     public static void main(String[] args) {
         chain.add(new RedditResolver());
-
+        chain.add(new TwitterResolver());
         SpringApplication.run(Main.class, args);
     }
 
