@@ -2,6 +2,7 @@ package nl.next35.web.controller;
 
 import nl.next35.domain.Post;
 import nl.next35.domain.User;
+import nl.next35.domain.util.PostUtil;
 import nl.next35.logic.ResolverChain;
 import nl.next35.logic.services.AlchemyService;
 import nl.next35.logic.services.PersonalityService;
@@ -34,18 +35,11 @@ public final class UserController {
     @RequestMapping("/user/alchemy")
     public JSONObject alchemy(@RequestParam("name") String name) {
         ResolverChain chain = Main.getResolverChain();
-
-        List<Post> posts = new ArrayList<>();
-        posts.addAll(chain.resolve(new User(name)));
-
-        StringBuilder builder = new StringBuilder();
-        for (Post p : posts) {
-            builder.append(p.getContent());
-            builder.append("\n");
-        }
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
 
         AlchemyService service = Main.getAlchemyService();
-        service.setInput(builder.toString());
+        service.setInput(postsString);
 
         JSONObject json = new JSONObject();
         json.put("emotion", service.getEmotion());
@@ -60,18 +54,11 @@ public final class UserController {
     @RequestMapping("/user/personality")
     public JSONObject personality(@RequestParam("name") String name) {
         ResolverChain chain = Main.getResolverChain();
-
-        List<Post> posts = new ArrayList<>();
-        posts.addAll(chain.resolve(new User(name)));
-
-        StringBuilder builder = new StringBuilder();
-        for (Post p : posts) {
-            builder.append(p.getContent());
-            builder.append("\n");
-        }
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
 
         PersonalityService service = Main.getPersonalityService();
-        service.setInput(builder.toString());
+        service.setInput(postsString);
 
         JSONObject json = new JSONObject();
         json.put("personality", service.getProfile());
@@ -82,18 +69,11 @@ public final class UserController {
     @RequestMapping("/user/tone ")
     public JSONObject tone(@RequestParam("name") String name) {
         ResolverChain chain = Main.getResolverChain();
-
-        List<Post> posts = new ArrayList<>();
-        posts.addAll(chain.resolve(new User(name)));
-
-        StringBuilder builder = new StringBuilder();
-        for (Post p : posts) {
-            builder.append(p.getContent());
-            builder.append("\n");
-        }
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
 
         ToneService service = Main.getToneService();
-        service.setInput(builder.toString());
+        service.setInput(postsString);
 
         JSONObject json = new JSONObject();
         json.put("document", service.getDocumentTone());
