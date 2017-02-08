@@ -28,7 +28,7 @@ public final class RedditResolver implements Resolver {
         JSONParser parser = new JSONParser();
 
         try {
-            URL url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json");
+            URL url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json?limit=100");
             URLConnection connection = url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
 
