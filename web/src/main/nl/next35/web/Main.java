@@ -1,7 +1,7 @@
 package nl.next35.web;
 
-import nl.next35.domain.User;
 import nl.next35.logic.RedditResolver;
+import nl.next35.logic.ResolverChain;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,11 +11,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+    private static final ResolverChain chain = new ResolverChain();
 
-        RedditResolver rdr = new RedditResolver();
-        System.out.println(rdr.getPosts(new User("Peewbacca")).size());
+    public static void main(String[] args) {
+        chain.add(new RedditResolver());
+
+        SpringApplication.run(Main.class, args);
+    }
+
+    public static ResolverChain getResolverChain() {
+        return chain;
     }
 
 }

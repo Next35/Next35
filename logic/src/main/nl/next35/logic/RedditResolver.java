@@ -13,52 +13,42 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ken on 2/7/2017.
  */
-public class RedditResolver implements Resolver {
+public final class RedditResolver implements Resolver {
 
-    public static final String USER_AGENT = "Bot for reading comments of users";
-    private URL url;
-    private ArrayList<Post> posts;
-
-    public RedditResolver() {
-
-    }
+    private static final String USER_AGENT = "Bot for reading comments of users";
 
     @Override
-    public ArrayList<Post> getPosts(User user) {
-        posts = new ArrayList<>();
-        InputStream in = null;
+    public List<Post> getPosts(User user) {
+        List<Post> posts = new ArrayList<>();
         JSONParser parser = new JSONParser();
+
         try {
-            this.url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json?limit=1000");
-            //in = this.url.openStream();
-            URLConnection conn = this.url.openConnection();
-            Thread.sleep(2000);
-            conn.setRequestProperty("User-Agent", USER_AGENT);
-            in = conn.getInputStream();
-            String jsonOutput = IOUtils.toString(in);
-            System.out.println("jsonoutput:    " + jsonOutput);
-            // parse json
-            Object obj = parser.parse(jsonOutput);
-            JSONObject jsonObject = (JSONObject) obj;
-            // loop array
-            JSONObject msg = (JSONObject) jsonObject.get("data");
-            JSONArray children = (JSONArray) msg.get("children");
-            for (int i = 0; i < children.size(); i++) {
-                JSONObject postObj = (JSONObject) children.get(i);
-                JSONObject postData = (JSONObject) postObj.get("data");
-                String msgBody = postData.get("body").toString();
-                Post p = new Post(user, msgBody);
-                posts.add(p);
+            URL url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json");
+            URLConnection connection = url.openConnection();
+            connection.setRequestProperty("User-Agent", USER_AGENT);
+
+            try (InputStream in = connection.getInputStream()) {
+                String value = IOUtils.toString(in);
+                JSONObject json = (JSONObject) parser.parse(value);
+                JSONObject message = (JSONObject) json.get("data");
+                JSONArray children = (JSONArray) message.get("children");
+                for (int i = 0; i < children.size(); i++) {
+                    JSONObject post = (JSONObject) children.get(i);
+                    JSONObject content = (JSONObject) post.get("data");
+
+                    String body = content.get("body").toString();
+                    posts.add(new Post(user, body));
+                }
             }
-        } catch (IOException | ParseException | InterruptedException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(in);
         }
+
         return posts;
     }
 }
