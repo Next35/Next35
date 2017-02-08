@@ -2,17 +2,19 @@ package nl.next35.web.controller;
 
 import nl.next35.domain.Post;
 import nl.next35.domain.User;
+import nl.next35.domain.util.PostUtil;
 import nl.next35.logic.ResolverChain;
+import nl.next35.logic.services.AlchemyService;
+import nl.next35.logic.services.PersonalityService;
+import nl.next35.logic.services.ToneService;
 import nl.next35.web.Main;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Lesley
@@ -20,21 +22,63 @@ import java.util.Objects;
 @RestController
 public final class UserController {
 
-    @Autowired
-    private ApplicationContext context;
-
-
     @RequestMapping("/user/resolve")
     public List<Post> resolve(@RequestParam(value = "name") String name, @RequestParam(value = "service") String service) {
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(service);
-
         ResolverChain chain = Main.getResolverChain();
 
         List<Post> posts = new ArrayList<>();
         posts.addAll(chain.resolve(new User(name)));
 
         return posts;
+    }
+
+    @RequestMapping("/user/alchemy")
+    public JSONObject alchemy(@RequestParam("name") String name) {
+        ResolverChain chain = Main.getResolverChain();
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
+
+        AlchemyService service = Main.getAlchemyService();
+        service.setInput(postsString);
+
+        JSONObject json = new JSONObject();
+        json.put("emotion", service.getEmotion());
+        json.put("concepts", service.getConcepts());
+        json.put("sentiment", service.getSentiment());
+        json.put("keywords", service.getKeywords());
+        json.put("entities", service.getEntities());
+
+        return json;
+    }
+
+    @RequestMapping("/user/personality")
+    public JSONObject personality(@RequestParam("name") String name) {
+        ResolverChain chain = Main.getResolverChain();
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
+
+        PersonalityService service = Main.getPersonalityService();
+        service.setInput(postsString);
+
+        JSONObject json = new JSONObject();
+        json.put("personality", service.getProfile());
+
+        return json;
+    }
+
+    @RequestMapping("/user/tone")
+    public JSONObject tone(@RequestParam("name") String name) {
+        ResolverChain chain = Main.getResolverChain();
+        List<Post> posts = chain.resolve(new User(name));
+        String postsString = PostUtil.postCollectionToString(posts);
+
+        ToneService service = Main.getToneService();
+        service.setInput(postsString);
+
+        JSONObject json = new JSONObject();
+        json.put("document", service.getDocumentTone());
+
+        return json;
     }
 
     @RequestMapping("/user/*")
