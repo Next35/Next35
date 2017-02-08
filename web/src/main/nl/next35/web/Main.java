@@ -15,7 +15,7 @@ public class Main {
         SpringApplication.run(Main.class, args);
 
         RedditResolver rdr = new RedditResolver();
-        System.out.println(rdr.getPosts(new User("Peewbacca")));
+        System.out.println(rdr.getPosts(new User("Peewbacca")).size());
     }
 
 }
