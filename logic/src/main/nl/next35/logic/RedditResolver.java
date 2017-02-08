@@ -33,7 +33,7 @@ public class RedditResolver implements Resolver {
         InputStream in = null;
         JSONParser parser = new JSONParser();
         try {
-            this.url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json");
+            this.url = new URL("https://www.reddit.com/user/" + user.getUsername() + "/comments.json?limit=1000");
             //in = this.url.openStream();
             URLConnection conn = this.url.openConnection();
             Thread.sleep(2000);
